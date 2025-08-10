@@ -1,0 +1,351 @@
+To go inside the pod
+
+kubectl -n mendix exec -it <pod_name> -- bash
+======================================================
+
+To Drop tables from DB 
+
+[15-11 19:53] Michael, Abi
+:%
+
+:%s:"::g
+:%s:^:DROP TABLE :g
+:%s:$:;:g
+
+===============================================================
+
+To Stop all mendix applications
+
+kubectl scale deploy -n mendix --replicas=1 --all
+
+kubectl get deploy -n mendix -o=jsonpath='{range .items[?(@.spec.replicas==1)]}{.metadata.name}{"\n"}{end}' > deploy.txt
+
+kubectl get deploy -n mendix -o=jsonpath='{range .items[?(@.spec.replicas==1)]}{.metadata.name}{"\n"}{end}' | xargs -I {} kubectl scale deploy/{} --replicas=0 -n mendix
+
+cat deploy.txt | xargs -I {} kubectl scale deploy/{} --replicas=1 -n mendix
+
+and once all apps are stopped verify using below. Once all are stopped. The below command will give empty output
+kubectl get pods --sort-by=.metadata.creationTimestamp -n mendix --watch
+and then start using :
+kubectl scale deploy -n mendix --replicas=1 --all
+and verify using. It may take some time for all apps to startup and in Running state. If any gets into CrashLoop check it errors to see if its the same error that occurs for trust-it and dicivaluereport
+kubectl get pods --sort-by=.metadata.creationTimestamp -n mendix --watch
+But please check with Wouter before proceeding to stop all apps in QA
+
+
+
+cat deploy.txt | xargs -I {} kubectl scale deploy/{} --replicas=1 -n mendix
+
+https://po-ess.mx.dsm.app/login.html
+
+
+Check the last successful Acceptance Release version and its source branch
+Check the currently set source branch for the build pipeline
+Disable continuous deployment trigger in Release config
+Trigger new build from Build pipeline (if different branch configured, make necesaary changes)
+Create release for the new build and disable automated trigger for all envs
+Deploy release to Acc
+Enable continuous deployment trigger back for the Release config
+If changes made to build pipeline, revert it also if applicable
+======================================================================================================================
+
+To get debugger password
+
+kubectl describe pod -n mendix wh-spareparts-leader-67664b55cc-tzcvv | grep DEBUGGER_PASSWORD
+
+============================================================================================================================
+
+[17:34] Michael, Abi
+$ kubectl.exe config get-contexts
+$ kubectl.exe config use-context mendix-dt-alb-context
+$ kubectl.exe config use-context mendix-acc-alb-context
+$ kubectl.exe config use-context mendix-prd-alb-context
+$ kubectl get pods --sort-by=.metadata.creationTimestamp -n mendix -l app=dfspicking --watch
+$ kubectl get secrets employability -n mendix -o=go-template='{{index .data "db-password"}}' | base64 -d
+$ kubectl get secrets delvo-analytics -n mendix -o=go-template='{{index .data "mxadmin-password"}}' | base64 -d
+kubectl get secrets po-ess -n mendix -o=go-template='{{index .data "mxadmin_password"}}' | base64 -d
+kubectl get secret sniper -n mendix -o jsonpath='{.data.m2ee_database\.yaml}' | base64 -d | grep -oP 'DatabasePassword: \K.*'
+
+kubectl get secret po-ess -n mendix -o jsonpath='{.data.m2ee_database\.yaml}' | base64 -d | grep -oP 'DatabasePassword: \K.*'
+
+Database Password 
+
+kubectl get secret smartaudit -n mendix -o jsonpath='{.data.m2ee_database\.yaml}' | base64 -d | grep -oP 'DatabasePassword: \K.*'
+
+M2ee password
+kubectl -n mendix exec <pod> -- cat /etc/m2ee/admin.yaml | Select-String "admin_pass:" | ForEach-Object { $_.ToString().Split(":")[1].Trim() }
+
+==========================================================================================================================================================
+
+New Cluster Commands
+aws eks --region eu-west-1 update-kubeconfig --name maas-01
+
+1. LIC PMJJBY Policy
+2. ORI PMSBY Policy
+
+/dsm/mendix/apps/ebudget-ch/config/mendix/jvm/heapspace/xmx
+
+============================================================================
+
+To check particular pods app status
+
+kubectl get all -n mendix | grep anh-mkt-insight
+
+===============================================================================================================
+
+To check the Java Heap Memory (However needs to execute on powershell)
+$env:aws_profile = "dsm_prd"
+kubectl exec -n mendix -it ebudget-ch-follower-6f74c5b6dd-62sc4 -- /bin/bash
+kubectl exec -n mendix -it hof-ic-leader-c46c9554d-5lh9c -- /bin/bash
+ps auxwww
+
+====================================================================================================================
+
+pod logs
+
+kubectl logs -f pod-name -n namespace --timestamps
+Ex: kubectl logs -f creditportal-slave-f79cd846b-c88vp -n mendix --timestamps
+
+Previous log we can check through
+
+kubectl logs -f pod-name -n namespace --timestamps -p
+Ex: kubectl logs -f creditportal-slave-f79cd846b-c88vp -n mendix --timestamps -p
+
+kubectl logs invoiceportal-leader-74b445d946-p5bpr -n mendix -p --timestamps
+
+==========================================================================================================================
+
+Describe ingress command
+
+kubectl describe ingress app-name -n mendix
+Ex:  kubectl describe ingress anh-mkt-insight -n mendix
+
+============================================================================================================================
+
+Scale up pods
+
+kubectl scale deployments/pod-name -n mendix --replicas=1
+Ex:  kubectl scale deployments/hnc-pricing-slave -n mendix --replicas=1
+
+Scale Down pods
+
+kubectl scale deployments/pod-name -n mendix --replicas=0
+Ex:  kubectl scale deployments/hnc-pricing-slave -n mendix --replicas=0
+
+Scale down leader/slave pod to 0 and then Scale up to 1
+    kubectl scale deployments/oee-dalry-follower -n mendix --replicas=1
+    kubectl scale deployments/hnc-pricing-slave -n mendix --replicas=0
+
+=====================================================================================================================================
+	
+Restart pods
+
+kubectl rollout restart -n mendix deploy/pod-name
+Ex:  kubectl rollout restart -n mendix deploy/pss-utt-enhance-follower
+
+======================================================================================================================================
+
+To get configmap file
+
+kubectl get configmap app-name -n mendix -o yaml
+EX:  kubectl get configmap coastore-common -n mendix -o yaml
+
+========================================================================================================================================
+
+To get MX-admin/DB-admin password
+
+MX-Admin
+kubectl get secrets app-name -n mendix -o=go-template='{{index .data "mxadmin-password"}}' | base64 -d
+EX:  kubectl get secrets certool -n mendix -o=go-template='{{index .data "mxadmin-password"}}' | base64 -d
+
+kubectl get secrets panda -n mendix -o jsonpath='{.data.admin-password}'[System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($adminpass))
+
+DB-Admin
+kubectl get secrets app-name -n mendix -o=go-template='{{index .data "db-password"}}' | base64 -d
+EX:  kubectl get secrets certool -n mendix -o=go-template='{{index .data "db-password"}}' | base64 -d
+==============================================================================================================================================
+
+To validate ingresses jsonpath file
+kubectl get ingress -A -o=jsonpath='{.items[*].apiVersion}'
+kubectl get ingress -A -o=jsonpath='{.items[?(@.apiVersion=="networking.k8s.io/v1")].metadata.name}'
+kubectl get ingress -A | grep apiVersion
+kubectl get ingress -A -ojsonpath='{range .items[*]}{.apiVersion}{"\n"}{end}'
+
+==============================================================================================================================================================
+
+Rollback the deployment revision
+
+to check history
+	helm history app-name -n mendix
+	EX:  helm history trust-it -n mendix
+
+to rollback the version
+	helm rollback app-name version -n mendix
+	EX:  helm rollback trust-it 21 -n mendix
+
+
+$ helm list -n monitoring
+$ helm history mimir -n monitoring
+$ helm rollback mimir 72 -n monitoring
+
+===================================================================================================================
+
+
+Kubernete Local Portal link
+kubectl proxy --kubeconfig=.kube/config
+
+kubectl logs -f -n mendix customermdm-leader-67967cf99-52xft --timestamps | tee ~/Downloads/customermdm-leader.log.txt
+kubectl logs -f -n mendix customermdm-slave-796974bdc5-dbb64 --timestamps | tee ~/Downloads/customermdm-slave.log.txt
+
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
+
+
+
+3) Scale down leader/slave pod to 0 and then Scale up to 1
+    kubectl scale deployments/iba-leader -n mendix --replicas=1
+    kubectl scale deployments/anh-mkt-insight-leader -n mendix --replicas=0
+	
+3) Scale down leader pod to 0 and then Scale up to 1
+    kubectl scale deployments/ftebudgeting-leader -n mendix --replicas=0
+    kubectl scale deployments/dfs-materials-slave -n mendix --replicas=0
+	
+	
+	https://gpb-board.mx.dsm.app/index.html
+	
+	kubectl -n mendix exec -it budelpack-leader-6cd6b94c84-d47c8 -- bash  - to check container
+	
+echo $HTTP_RESPONSE_HEADERS
+
+echo $MXRUNTIME_com_mendix_core_SameSiteCookies
+
+echo $requests.memory
+
+echo $MXRUNTIME_SessionTimeout
+
+MXRUNTIME.SessionTimeout
+
+
+https://anh-mkt-insight.mx.dsm.app
+echo $MXRUNTIME_com_mendix_core_StorageService
+
+
+$ kubectl logs -f -n mendix dpm-mobilescan-leader-d9bf9db84-dq8pl --timestamps | tee ~/Downloads/trust_it_log.txt
+
+
+AWS Backup for particular date
+
+DB backup is taken as snapshot daily for the whole Mendix apps and so in order to get the backup for a particular app from a particular date, we will have to do a point in time restore of db to a point on that date. This will create a new db instance (which takes around 1.5 hours ) and after that we can take a backup from that point for the required app. So it may take around 2 to 2.5 hours and once after the backup is taken the new db instance which is created needs to be removed as it will incur additional AWS cost.
+
+To Get Pod Details like Image (Build ID) / Node Name
+
+kubectl describe pod -n mendix panda-slave-6c6d6fc865-sk6pj
+kubectl describe pod -n mendix panda-slave-6c6d6fc865-sk6pj | grep Image
+kubectl describe pod -n mendix panda-slave-6c6d6fc865-sk6pj | grep Node
+
+To Get Node Details
+
+kubectl describe node ip-10-241-106-46.eu-west-1.compute.internal
+
+
+https://anh-pricing.mx.dsm.app/)
+
+504 error code is related with Time 
+
+8329930805
+https://anh-pricing.qa.mx.dsm.app/)
+
+SAP Bolero ID - 834556
+[17:31] Kalyanrao-Patil, Suhas
+pay attention, there is a different code for the HCL R&M team          4090485 - 2310 - Hrs GBS TS BUILD (R&M) Dig. Mendix 2023
+
+
+
+https://anh-mkt-insight.mx.dsm.app
+
+
+Onboarded senior resource and provided training to the existing team to identify the cause and application impact
+
+
+https://aws.amazon.com/events/summits/amsterdam/
+
+https://aws.amazon.com/premiumsupport/technology-and-programs/proactive-services/
+
+Outcomes of EKS Ops review :
+
+    - Good Understanding of best practice recommendations.
+    - Reduction in issue occurrence probability.
+   - Improved overall efficiencies.
+   
+   
+ https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html#kubernetes-release-calendar
+ 
+ 
+ 
+ select requestedcompletiondate,actionnumber, * FROM public."request$request" req where requestedcompletiondate
+    is not null and  requestedcompletiondate < '2023-03-31';
+
+
+
+mendix.DatabaseHost - variable Name
+
+dsm-mendix-db-1-1-co2trust-cluster.cluster-ca3licaw94yn.eu-west-1.rds.amazonaws.com
+
+
+dsm-mendix-db-1.cluster-ca3licaw94yn.eu-west-1.rds.amazonaws.com
+
+
+
+Site URL Production:                   https://hnccustomercare.mx.dsm.app 
+
+Site URL Quality (Acceptance):   https://hnccustomercare.qa.mx.dsm.app
+
+Site URL Development:               https://hnccustomercare.dev.mx.dsm.app
+
+APP on Mendix server, Developer need to add and  send the request to sa_146364@dsm1234.onmicrosoft.com to the group. Admin team needs to accept the new application request from Mendix portal. (Apps->> Mendix App)
+
+Mendix version – (Optional) : Check which verison of Mendix app is created
+
+Mendix Repository URL (Team Server URL) : 
+
+Business Group  - for example DFS, DEM, DNP, GS, DEP,DRF
+
+
+Gravinton
+https://batchtracking.dev.mx.dsm.app/
+
+https://lidiz.dev.mx.dsm.app/
+
+https://dicivaluereport.mx.dsm.app/login.html
+
+
+
+
+
+
+kubectl get secrets air-freight -n mendix -o=go-template='{{index .data "db-password"}}' | base64 -d
+
+
+
+
+https://fermentation.dev.mx.dsm.app/index.html
+
+
+
+
+
+
+LTS MTS
+9.24
+
+10.xx LTS
+9.xx LTS
+
+
+AMazon 
+Code - MZN3-KPKEXG-68MU
+Pin - 6014875057310074
+
+
+Mendix@123
+
+{}
