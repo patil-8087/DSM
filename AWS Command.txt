@@ -1,0 +1,162 @@
+AWS Command
+
+
+aws eks --region eu-west-1 update-kubeconfig --name mendix-acc-alb
+
+aws eks --region eu-west-1 update-kubeconfig --name maas-01
+
+
+To connect on cluster
+
+
+setx AZURE_DEVOPS_PAT "o4lxpmeec4b67ux5o3do7hokmqljukvaipn7ngqbvh56el4wkzta"
+
+
+To Copy file from local system to S3 bucket
+
+aws s3 cp /c/Users/834556/Documents/Migration/oee-darly/files/ s3://dsm-mx-oee-dalry-dt-eu-west-1/ --recursive
+
+aws s3 cp /home/ec2-user/c4c-hr-s3Files/ s3://dsm-mx-anh-c4c-hr-acc-eu-west-1/ --recursive
+
+
+
+S3 file download
+
+Connect to corresponding AWS environment
+dsm-mx-wh-spareparts-dt-eu-west-1
+
+aws s3 sync s3://dsm-mx-wh-spareparts-prd-eu-west-1/ .
+aws s3 sync s3://dsm-mx-iba-prd-eu-west-1/ .
+
+
+
+aws s3 sync s3://dsm-mx-smartaudit-prd-eu-west-1/ .
+
+$ aws --region eu-west-1 s3 ls s3://dsm-mx-oee-dalry-dt-eu-west-1 --summarize
+aws s3 ls --summarize --human-readable --recursive s3://dsm-mx-oee-dalry-dt-eu-west-1/
+aws s3 sync s3://dsm-mx-graphx-prd-eu-west-1 s3://dsm-mx-graphx-design-prd-eu-west-1
+
+dsm-mx-anh-valuetracker-acc-eu-west-1
+dsm-mx-anh-ghg-track-acc-eu-west-1
+	
+dsm-mx-ghg-track-tool-acc-eu-west-1
+
+sudo dnf install zip
+
+to upload files
+aws s3 cp <source> <target>
+aws s3 cp yellow-rim-s3files-prd.zip s3://dsm-mx-anh-c4c-hr-acc-eu-west-1
+aws s3 sync /home/ec2-user/iba/ s3://dsm-mx-iba-acc-eu-west-1/ 
+s3://dsm-mx-valuetracker-prd-eu-west-1
+aws s3 sync s3://dsm-mx-ghg-track-tool-prd-eu-west-1/ s3://dsm-mx-anh-ghg-track-prd-eu-west-1/
+
+/home/ec2-user/prd-valuetr-s3files
+
+s3://dsm-mx-valuetracker-prd-eu-west-1 
+
+CiJpYWx7oCgP7C2025
+ 
+Session ID: Suhas.Kalyanrao-Patil@dsm.com-fypb26rgl39ndelldthhbjk8ou
+Instance ID: i-0070ac63200d74e1c
+
+To download to a local directory. Got to inside the local directory and :
+
+$ aws --region eu-west-1 s3 sync s3://dsm-mx-iba-prd-eu-west-1/ .
+dsm-mx-videolearning-acc-eu-west-1
+
+zip -r <output_file> <folder_1> <folder_2> ... <folder_n>
+
+aws s3 sync  s3://your-bucket-name folder-path
+
+kubectl delete pods hof-ic-leader-fccc5b9f7-mhgk5 --grace-period=0 --force
+
+aws s3 sync carveoutdici.zip s3://dsm-mx-carveoutdici-dt-eu-west-1/
+
+---------------------------------------------------------------------------------------
+Bootstrap Command
+
+cdk bootstrap aws://390402548852/eu-west-1
+
+
+----------------------------------------------------------------------------------------
+
+To Delete RDS Cluster
+
+aws rds delete-db-instance --db-instance-identifier <instance name>
+aws rds delete-db-cluster --db-cluster-identifier dsm-mendix-db-1-1-co2trust-cluster --skip-final-snapshot
+
+
+
+
+aws rds delete-db-instance --db-instance-identifier dsm-mendix-db-1-1-co2trust-cluster
+Cluster:  dsm-mendix-db-1-1-co2trust-cluster
+instance: dsm-mendix-db-1-1-co2trust-cluster
+
+-----------------------------------------------------------------------------------------------------------
+
+tar xvzf files_only-9a4f71a3-202404301120.tar.gz -C /c/Users/834556/Documents/Migration/Delvo_analytics/files --strip-component 2	
+aws s3 sync /c/Users/834556/Documents/Migration/Delvo_analytics/files s3://dsm-mx-delvo-analytics-prd-eu-west-1/
+
+------------------------------------------------------------------------------------------------------------
+GIT
+Branch
+Azure
+kubernetes
+C C++
+Python, Java
+Docker
+
+Topic to learn 
+-----------------------------------------------------------
+Devops
+Helm
+GIT
+Docker.image
+Container - running
+CDK
+Type Script
+EKS
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Targets
+
+AWS Cloud Development Kit
+Azure devops 
+AWS cloud
+Kubernetes
+Monitoring tool grafana
+Docker
+Any programming language python would be good
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+aws s3 sync s3://dsm-mx-cumulus-dt-eu-west-1 s3://dsm-mx-delvo-analytics-dt-eu-west-1
+
+aws s3 cp s3://dsm-mx-hof-approvals-prd-eu-west-1/ . --recursive --exclude "*" --include "UUID.txt"
+
+
+CREATE USER vector_user WITH PASSWORD 'YourSecurePassword123';
+
+
+-- Allow connection and schema usage
+GRANT CONNECT ON DATABASE vector_db TO vector_user;
+GRANT USAGE ON SCHEMA public TO vector_user;
+
+-- Allow basic table operations
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO vector_user;
+
+-- (Optional) Allow table creation
+GRANT CREATE ON SCHEMA public TO vector_user;
+
+-- Ensure future tables are accessible too
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO vector_user;
+
+
+
+CREATE USER vector_user WITH PASSWORD 'YourSecurePassword123';
+================================================================================================================================
+
+
+https://forms.arcattest.com/arcone/form/ConsentForm5/publicrecord/g1NSob6IpJQ7kvERvbHUZx80sMyOwCKItLUYclfScXs/save
